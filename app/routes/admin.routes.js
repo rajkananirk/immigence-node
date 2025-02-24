@@ -146,7 +146,7 @@ module.exports = function (app, upload, news_image) {
 
     // Noc Codes Routes
     app.get("/admin/noc-codes", verifyToken, admin.getAllNocCodes);
-    app.get("/admin/noc-codes/:id",verifyToken, admin.getNocCodesById);
+    app.get("/admin/noc-codes/:id", admin.getNocCodesById);
     app.post("/admin/noc-codes", [
         verifyToken,
         check('noc_code').notEmpty().withMessage("NOC code is required"),
