@@ -10,4 +10,8 @@ module.exports = function (app) {
     // Frontend Latest Updates Data Route
     app.get("/get-frontend-latest-updates-data", users.getFrontendLatestUpdatesData);
     app.get("/get-frontend-latest-draw-data", users.getFrontendLatestDrawData);
+    app.get("/get-frontend-noc-codes", users.getFrontendNocCodes);
+    app.get("/get-frontend-noc-codes/:noc_code", users.getFrontendNocCodesById);
+    app.get("/get-frontend-pnp-draw/:province", users.getFrontendPnpDrawByProvince);
+
 };

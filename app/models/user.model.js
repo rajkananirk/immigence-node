@@ -5,7 +5,8 @@ const {
     PnpDraw,
     IrccUpdate,
     NewsAndInsights,
-    News
+    News,
+    NocCodes
 } = require('../schema/schema.model');
 const User = {};
 
@@ -86,6 +87,41 @@ User.MdlGetFrontendLatestDrawData = async (result) => {
     }
 };  
 
+// Get Frontend Noc Codes
+User.MdlGetFrontendNocCodes = async (result) => {
+    try {
+        const nocCodes = await NocCodes.find()
+            .select('class_title noc_code teer_category _id');
+        result(null, nocCodes);
+    } catch (err) {
+        console.error("Database error:", err);
+        result(err, null);
+    }
+};
+
+// Get Frontend Noc Codes By Id
+User.MdlGetFrontendNocCodesById = async (noc_code, result) => {
+    try {
+        const nocCode = await NocCodes.findOne({ noc_code: noc_code });
+        result(null, nocCode);
+    } catch (err) {
+        console.error("Database error:", err);
+        result(err, null);
+    }
+};
+
+// Get Frontend Pnp Draw By Province
+User.MdlGetFrontendPnpDrawByProvince = async (province, result) => {
+    try {
+        const pnpDraw = await PnpDraw.find({ 
+            province: { $regex: province, $options: 'i' } 
+        });
+        result(null, pnpDraw);
+    } catch (err) {
+        console.error("Database error:", err);
+        result(err, null);
+    }
+};
 
 module.exports = {
     User,
