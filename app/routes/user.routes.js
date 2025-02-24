@@ -2,19 +2,12 @@ const {
     check,
     validationResult
 } = require("express-validator");
-// var authenticate = require("../Middleware/authenticate");
+const { verifyToken } = require("../middleware/authJwt.js");
 
 module.exports = function (app) {
     const users = require("../controllers/user.controller.js");
 
-    app.get("/", (req, res) => {
-           res.json({
-                  message: "Welcome to Inmigence application."
-           });
-    });
-    //COMMON_API
-    app.get("/get_latest_crs_data", users.get_latest_crs_data);
-
-
-    app.get("/search_immigration_programm",users.search_immigration_programm);
+    // Frontend Latest Updates Data Route
+    app.get("/get-frontend-latest-updates-data", users.getFrontendLatestUpdatesData);
+    app.get("/get-frontend-latest-draw-data", users.getFrontendLatestDrawData);
 };

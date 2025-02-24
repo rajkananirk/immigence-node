@@ -1,60 +1,93 @@
-const sql = require("../config/db.js");
-const fs = require('fs');
-const { log } = require("console");
-const User = function (user) { };
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const {   
+    ExpressEntryDraw,
+    PnpDraw,
+    IrccUpdate,
+    NewsAndInsights,
+    News
+} = require('../schema/schema.model');
+const User = {};
 
-var readHTMLFile = function (path, callback) {
-       fs.readFile(path, {
-              encoding: "utf-8"
-       }, function (err, html) {
-              if (err) {
-                     throw err;
-                     callback(err);
-              } else {
-                     callback(null, html);
-              }
-       });
+// Get All Frontend Latest Updates Data
+User.MdlGetFrontendLatestUpdatesData = async (result) => {
+    try {
+        // Get latest express entry draw (default)
+        const latestExpressDraw = await ExpressEntryDraw.findOne(
+            { is_default: true }
+        ).sort({ draw_number: -1 });
+
+        // Get latest PNP draw (default)
+        const latestPnpDraw = await PnpDraw.findOne(
+            { is_default: true }
+        ).sort({ draw_number: -1 });
+
+        // Get express entry draws (non-default, sorted by draw number)
+        const expressEntryDraws = await ExpressEntryDraw.find(
+        ).sort({ createdAt: -1 });
+
+        // Get PNP draws (sorted by creation date)
+        const pnpDraws = await PnpDraw.find(
+        )   
+            .sort({ createdAt: -1 });
+
+        // Get IRCC updates (sorted by creation date)
+        const irccUpdates = await IrccUpdate.find()
+            .sort({ createdAt: -1 });
+
+        // Get news and insights (sorted by creation date)
+        const newsAndInsights = await NewsAndInsights.find()
+            .sort({ createdAt: -1 });
+
+        // Get news (sorted by creation date)
+        const news = await News.find()
+            .sort({ createdAt: -1 });
+
+        // Combine all data
+        const combinedData = {
+            latest_express_draw: latestExpressDraw || null,
+            latest_pnp_draw: latestPnpDraw || null,
+            express_entry: expressEntryDraws || [],
+            pnp_draw: pnpDraws || [],
+            ircc_updates: irccUpdates || [],
+            news_and_insights: newsAndInsights || [],
+            news: news || []
+        };
+
+        result(null, combinedData);
+    } catch (err) {
+        console.error("Database error:", err);
+        result(err, null);
+    }
 };
-//COMMON_API
 
-User.MdlGetLatestCrsData = (req, result) => {
-       sql.query(
-              "Select * from latest_crs_draws",
-              function (err, res) {
-                     if (err) {
-                            console.log("error: ", err);
-                            result(err, null);
-                     } else {
-                            result(null, res[0]);
-                     }
-              }
-       );
+// Get Frontend Latest Draw Data
+User.MdlGetFrontendLatestDrawData = async (result) => {
+    try {
+        // Get latest express entry draw (default)
+        const latestExpressDraw = await ExpressEntryDraw.find(
+            { is_default: true }
+        ).sort({ draw_number: -1 });
+
+        // Get latest PNP draw (default)
+        const latestPnpDraw = await PnpDraw.find(
+            { is_default: true }
+        ).sort({ draw_number: -1 });
+
+        // Combine all data
+        const combinedData = {
+            draw_data: [...latestExpressDraw, ...latestPnpDraw]
+        };
+
+        result(null, combinedData);
+    } catch (err) {
+        console.error("Database error:", err);
+        result(err, null);
+    }
+};  
+
+
+module.exports = {
+    User,
+   
 };
-
-User.MdlSearchImmigrationProgramm = async (req, result) => {
-       sql.query("SELECT * FROM `noc_list` WHERE `class_title` LIKE '%"+ req.query.keyword+"%'", function (
-              err,
-              res
-       ) {
-              if (err) {
-                     console.log("error: ", err);
-                     result(err, null);
-              } else {
-                     console.log(res);
-                     
-                     result(null, res);
-              }
-       });
-};
-
-function makeotp(length) {
-       var result = "";
-       var characters = "0123456789";
-       var charactersLength = characters.length;
-       for (var i = 0; i < length; i++) {
-              result += characters.charAt(Math.floor(Math.random() * charactersLength));
-       }
-       return 1234;
-}
-
-module.exports = User;
