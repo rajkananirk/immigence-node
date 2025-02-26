@@ -1005,7 +1005,8 @@ exports.createNocCodes = (req, res) => {
         programs: req.body.programs,
         example_titles: req.body.example_titles,
         main_duties: req.body.main_duties,
-        employment_requirements: req.body.employment_requirements
+        employment_requirements: req.body.employment_requirements,
+        provinces: req.body.provinces
     };
 
     AdminModel.MdlCreateNocCodes(nocCodesData, (err, data) => {
@@ -1033,14 +1034,17 @@ exports.editNocCodes = (req, res) => {
             message: "Noc Codes ID is required"
         });
     }
+console.log(req.body.teer_category);
 
     const nocCodesData = {
         noc_code: req.body.noc_code,
         class_title: req.body.class_title,
+        teer_category: req.body.teer_category,
         programs: req.body.programs,
         example_titles: req.body.example_titles,
         main_duties: req.body.main_duties,
-        employment_requirements: req.body.employment_requirements
+        employment_requirements: req.body.employment_requirements,
+        provinces: req.body.provinces
     };
 
     AdminModel.MdlEditNocCodes(req.params.id, nocCodesData, (err, data) => {
@@ -1086,6 +1090,25 @@ exports.deleteNocCodes = (req, res) => {
         });
     });
 };
+
+// Get Dashboard Counts
+exports.getDashboardCounts = (req, res) => {
+    AdminModel.MdlGetDashboardCounts((err, data) => {
+        if (err) {
+            res.status(500).json({
+                status: false,
+                message: err.message || "Some error occurred while retrieving dashboard counts."
+            });
+            return;
+        }
+        res.status(200).json({
+            status: true,
+            message: "Dashboard counts retrieved successfully",
+            info: data
+        });
+    });
+};
+
 
 
     

@@ -38,7 +38,15 @@ const nocCodesSchema = new mongoose.Schema({
     programs: [{ type: Object }],
     example_titles: { type: Array },
     main_duties: { type: Array },
-    employment_requirements: { type: Array }
+    employment_requirements: { type: Array },
+    teer_category: String,
+    provinces: [{
+        tab: String,
+        data: [{
+            title: String,
+            description: String
+        }]
+    }]
 });
 
 const pnpDrawSchema = new mongoose.Schema({

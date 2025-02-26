@@ -792,8 +792,33 @@ AdminModel.MdlDeleteNocCodes = (id, result) => {
         });
 };
 
+// Get Dashboard Counts
+AdminModel.MdlGetDashboardCounts = async (result) => {
+    try {
+        const counts = await Promise.all([
+            NocCodes.countDocuments(),
+            News.countDocuments(),
+            NewsAndInsights.countDocuments(),
+            IrccUpdate.countDocuments(),
+            PnpDraw.countDocuments(),
+            ExpressEntryDraw.countDocuments()
+        ]);
 
+        const dashboardCounts = {
+            nocCodes: counts[0],
+            news: counts[1],
+            newsAndInsights: counts[2],
+            irccUpdates: counts[3],
+            pnpDraws: counts[4],
+            expressEntryDraws: counts[5]
+        };
 
+        result(null, dashboardCounts);
+    } catch (err) {
+        console.error("Database error:", err);
+        result(err, null);
+    }
+};
 
 module.exports = {
     AdminModel,

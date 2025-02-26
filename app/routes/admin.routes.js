@@ -150,11 +150,13 @@ module.exports = function (app, upload, news_image) {
     app.post("/admin/noc-codes", [
         verifyToken,
         check('noc_code').notEmpty().withMessage("NOC code is required"),
+        check('teer_category').notEmpty().withMessage("Teer category is required"),
         check('class_title').notEmpty().withMessage("Title is required"),
         check('programs').isArray().withMessage("Programe must be an array"),
         check('example_titles').isArray().withMessage("Example titles must be an array"),
         check('main_duties').isArray().withMessage("Main duties must be an array"),
-        check('employment_requirements').isArray().withMessage("Employment requirements must be an array")
+        check('employment_requirements').isArray().withMessage("Employment requirements must be an array"),
+        check('provinces').isArray().withMessage("Provinces must be an array")
     ], admin.createNocCodes);
 
     app.put("/admin/noc-codes/:id", [
@@ -164,8 +166,12 @@ module.exports = function (app, upload, news_image) {
         check('programs').optional().isArray().withMessage("Programe must be an array"),
         check('example_titles').optional().isArray().withMessage("Example titles must be an array"),
         check('main_duties').optional().isArray().withMessage("Main duties must be an array"),
-        check('employment_requirements').optional().isArray().withMessage("Employment requirements must be an array")
+        check('employment_requirements').optional().isArray().withMessage("Employment requirements must be an array"),
+        check('provinces').optional().isArray().withMessage("Provinces must be an array")
     ], admin.editNocCodes);
 
     app.delete("/admin/noc-codes/:id", verifyToken, admin.deleteNocCodes);
+
+    // Get Dashboard Data Counts
+    app.get("/admin/dashboard-counts",  admin.getDashboardCounts);
 };
