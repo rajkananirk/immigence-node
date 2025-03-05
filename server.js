@@ -72,6 +72,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/admin.routes.js")(app, upload, news_image);
 require("./app/routes/user.routes.js")(app);
+require("./app/routes/programLevel.routes.js")(app, upload, news_image);
 
 server.listen(process.env.PORT, () => {
     

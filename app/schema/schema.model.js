@@ -81,11 +81,71 @@ const newsSchema = new mongoose.Schema({
     image: { type: String, required: true }
 }, { timestamps: true });
 
+const programLevelSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    categories: [{
+        name: String,
+        program_levels: String
+    }]
+}, { timestamps: true });
+
+const fieldOfStudySchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    field_of_study: [{
+        name: String,
+    }]
+}, { timestamps: true });
+
+const DestinationSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    code: { type: String, required: true },
+    states: [{
+        name: String,
+        cities: [{
+            name: String,
+        }]
+    }]
+}, { timestamps: true });
+
+const InstitutionSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+}, { timestamps: true });
+
+
+const ProgramTagSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    color: { type: String, required: true },
+}, { timestamps: true });
+
+const ProgramsSchema = new mongoose.Schema({
+    university_logo: { type: String },
+    university_name: { type: String },
+    program_name: { type: String },
+    program_level: { _id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProgramLevel' } },
+    program_tag: [{
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProgramTag' },
+    }],
+    description: { type: String },
+    campus_city: { type: String },
+    tuition_fee_first_year: { type: String },
+    application_fee: { type: String },
+    program_duration: { type: String },
+    success_prediction: [{
+        month: { type: String },
+        success_rate: [{ value: String, status: String }],
+    }],
+    field_of_study: { _id: { type: mongoose.Schema.Types.ObjectId, ref: 'FieldOfStudy' } },
+}, { timestamps: true });
+
 const News = mongoose.model('News', newsSchema);
+const ProgramTag = mongoose.model('ProgramTag', ProgramTagSchema);
 const IrccUpdate = mongoose.model('IrccUpdate', irccUpdateSchema);
 const NewsAndInsights = mongoose.model('NewsAndInsights', newsAndInsightsSchema);
-
-
+const ProgramLevel = mongoose.model('ProgramLevel', programLevelSchema);
+const FieldOfStudy = mongoose.model('FieldOfStudy', fieldOfStudySchema);
+const Destination = mongoose.model('Destination', DestinationSchema);
+const Institution = mongoose.model('Institution', InstitutionSchema);
+const Programs = mongoose.model('Programs', ProgramsSchema);
 // Create models
 const PnpDraw = mongoose.model('PnpDraw', pnpDrawSchema);
 const Admin = mongoose.model('Admin', adminSchema);
@@ -104,5 +164,11 @@ module.exports = {
     PnpTools,
     NocPrograms,
     NocCodes,
-    IrccUpdate
+    IrccUpdate,
+    ProgramLevel,
+    FieldOfStudy,
+    Destination,
+    Institution,
+    ProgramTag,
+    Programs
 };
