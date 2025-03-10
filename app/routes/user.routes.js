@@ -19,7 +19,8 @@ module.exports = function (app) {
     app.get("/get-frontend-institution-types", users.getFrontendInstitutionTypes)
     // Frontend Program Search Route
     app.get("/get-frontend-program-search", users.getFrontendProgramSearch);
-    app.get("/get-frontend-program-search-by-program-name", users.getFrontendProgramSearchByProgramName)
+
+    app.post("/get-frontend-program-search-by-program-name", users.getFrontendProgramSearchByProgramName)
 
 
 

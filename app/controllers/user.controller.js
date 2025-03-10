@@ -186,7 +186,7 @@ exports.getFrontendProgramSearch = async (req, res) => {
 
 // Get Frontend Program Search By Program Name
 exports.getFrontendProgramSearchByProgramName = (req, res) => {
-    User.MdlGetFrontendProgramSearchByProgramName((err, data) => {
+    User.MdlGetFrontendProgramSearchByProgramName(req.body, (err, data) => {
         if (err) {
             res.status(500).json({
                 status: false,

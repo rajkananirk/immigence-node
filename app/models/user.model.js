@@ -253,15 +253,95 @@ User.MdlGetFrontendProgramSearch = async (filters, result) => {
         }
     }
 };
-
 // Get Frontend Program Search By Program Name
-User.MdlGetFrontendProgramSearchByProgramName = async (program_name, result) => {
+User.MdlGetFrontendProgramSearchByProgramName = async (filters, result) => {
     try {
-        const programSearch = await Programs.find({ program_name: { $regex: program_name, $options: 'i' } });
-        result(null, programSearch);
+        let query = {};
+        
+        // Build query based on provided filters
+        if (filters) {
+            // Program name search (required)
+            if (filters.program_name) {
+                query.program_name = { $regex: filters.program_name, $options: 'i' };
+            }
+
+            // Optional filters
+            if (filters.course) {
+                query.course = filters.course;
+            }
+            if (filters.field_of_study) {
+                query.field_of_study = filters.field_of_study;
+            }
+            if (filters.institution_type) {
+                query.institution_type = filters.institution_type;
+            }
+            if (filters.program_level) {
+                query.program_level = filters.program_level;
+            }
+            if (filters.program_sublevel) {
+                query.program_sublevel = filters.program_sublevel;
+            }
+        }
+
+        // Pagination parameters
+        const page = parseInt(filters.page) || 1;
+        const limit = parseInt(filters.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        // Get total count for pagination
+        const totalCount = await Programs.countDocuments(query);
+
+        // Get paginated data
+        const programSearch = await Programs.find(query)
+            .populate('program_tags')
+            .populate('program_level')
+            .populate({
+                path: 'field_of_study',
+                populate: {
+                    path: 'field_of_study',
+                    match: { '_id': filters.field_of_study }
+                }
+            })
+            .populate('institution_type')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        // Filter out empty field_of_study arrays if course filter is applied
+        const filteredProgramSearch = programSearch.map(program => {
+            if (filters.course && program.field_of_study && program.field_of_study.field_of_study) {
+                program.field_of_study.field_of_study = program.field_of_study.field_of_study.filter(
+                    field => field._id.toString() === filters.course
+                );
+            }
+            return program;
+        });
+
+        // Prepare pagination info
+        const totalPages = Math.ceil(totalCount / limit);
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
+
+        if (typeof result === 'function') {
+            result(null, {
+                data: filteredProgramSearch,
+                pagination: {
+                    total: totalCount,
+                    page: page,
+                    limit: limit,
+                    totalPages: totalPages,
+                    hasNextPage: hasNextPage,
+                    hasPrevPage: hasPrevPage,
+                    nextPage: hasNextPage ? page + 1 : null,
+                    prevPage: hasPrevPage ? page - 1 : null
+                }
+            });
+        }
     } catch (err) {
         console.error("Database error:", err);
-        result(err, null);
+        if (typeof result === 'function') {
+            result(err, null);
+        }
     }
 };
 
