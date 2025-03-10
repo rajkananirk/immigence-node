@@ -118,24 +118,71 @@ const ProgramTagSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const ProgramsSchema = new mongoose.Schema({
-    university_logo: { type: String },
-    university_name: { type: String },
-    program_name: { type: String },
-    program_level: { _id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProgramLevel' } },
-    program_tag: [{
-        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProgramTag' },
+    university_logo: {
+        type: String
+    },
+    university_name: {
+        type: String
+    },
+    program_name: {
+        type: String
+    },
+    program_level: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ProgramLevel'
+    },
+    program_sublevel: {
+        type: String
+    },
+    program_tags: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ProgramTag'
     }],
-    description: { type: String },
-    campus_city: { type: String },
-    tuition_fee_first_year: { type: String },
-    application_fee: { type: String },
-    program_duration: { type: String },
+    description: {
+        type: String
+    },
+    campus_city: {
+        type: String
+    },
+    tuition_fee_first_year: {
+        type: String
+    },
+    application_fee: {
+        type: String
+    },
+    program_duration: {
+        type: String
+    },
+    institution_type: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Institution'
+    },
     success_prediction: [{
-        month: { type: String },
-        success_rate: [{ value: String, status: String }],
+        month_title: {
+            type: String,
+            required: [true, "Month title is required"]
+        },
+        success_rate: [{
+            title: {
+                type: String,
+                required: [true, "Success rate title is required"]
+            },
+            status: {
+                type: String,
+                required: [true, "Success rate status is required"]
+            }
+        }]
     }],
-    field_of_study: { _id: { type: mongoose.Schema.Types.ObjectId, ref: 'FieldOfStudy' } },
-}, { timestamps: true });
+    field_of_study: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FieldOfStudy'
+    },
+    course: {
+        type: String
+    },
+}, {
+    timestamps: true
+});
 
 const News = mongoose.model('News', newsSchema);
 const ProgramTag = mongoose.model('ProgramTag', ProgramTagSchema);

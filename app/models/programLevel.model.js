@@ -22,6 +22,20 @@ ProgramLevelModel.MdlGetAllProgramLevels = (result) => {
     });
 };
 
+// Get Program Level by ID
+ProgramLevelModel.MdlGetProgramLevelById = (id, result) => {
+    ProgramLevel.findById(id)
+    .then(programLevel => {
+        result(null, programLevel); 
+    })
+    .catch(err => {
+        console.error("Database error:", err);
+        result(err, null);
+    });
+};  
+
+
+
 // Create Program Level
 ProgramLevelModel.MdlCreateProgramLevel = (data, result) => {   
     const programLevel = new ProgramLevel(data);
@@ -75,7 +89,17 @@ ProgramLevelModel.MdlGetAllFieldOfStudy = (result) => {
     });
 };
 
-
+// Get Field of Study by ID
+ProgramLevelModel.MdlGetFieldOfStudyById = (id, result) => {
+    FieldOfStudy.findById(id)
+    .then(fieldOfStudy => {
+        result(null, fieldOfStudy);
+    })
+    .catch(err => {
+        console.error("Database error:", err);
+        result(err, null);
+    });
+};
 
 // Create Field of Study
 ProgramLevelModel.MdlCreateFieldOfStudy = (data, result) => {
@@ -302,7 +326,7 @@ ProgramLevelModel.MdlGetProgramTagById = (id, result) => {
 ProgramLevelModel.MdlGetAllPrograms = (result) => {
     Programs.find()
     .populate('program_level')
-    .populate('program_tag')
+    .populate('program_tags')
     .populate('field_of_study')
     .then(programs => {
         result(null, programs);

@@ -10,6 +10,7 @@ module.exports = function (app) {
 
     // Program Level Routes 
     app.get("/program/program-levels",  programLevel.getAllProgramLevels);
+    app.get("/program/program-levels/:id", programLevel.getProgramLevelById);
     app.post("/program/program-levels", verifyToken, programLevel.createProgramLevel);
     app.put("/program/program-levels/:id", verifyToken, programLevel.updateProgramLevel);
     app.delete("/program/program-levels/:id", verifyToken, programLevel.deleteProgramLevel);
@@ -17,6 +18,7 @@ module.exports = function (app) {
 
     // Field of Study Routes
     app.get("/program/field-of-study", programLevel.getAllFieldOfStudy);
+    app.get("/program/field-of-study/:id", programLevel.getFieldOfStudyById);
     app.post("/program/field-of-study", verifyToken, programLevel.createFieldOfStudy);
     app.put("/program/field-of-study/:id", verifyToken, programLevel.updateFieldOfStudy);
     app.delete("/program/field-of-study/:id", verifyToken, programLevel.deleteFieldOfStudy);

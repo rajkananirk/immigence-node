@@ -13,5 +13,14 @@ module.exports = function (app) {
     app.get("/get-frontend-noc-codes", users.getFrontendNocCodes);
     app.get("/get-frontend-noc-codes/:noc_code", users.getFrontendNocCodesById);
     app.get("/get-frontend-pnp-draw/:province", users.getFrontendPnpDrawByProvince);
+    app.get("/get-frontend-program-levels", users.getFrontendProgramLevels);
+    app.get("/get-frontend-program-tags", users.getFrontendProgramTags)
+
+    app.get("/get-frontend-institution-types", users.getFrontendInstitutionTypes)
+    // Frontend Program Search Route
+    app.get("/get-frontend-program-search", users.getFrontendProgramSearch);
+    app.get("/get-frontend-program-search-by-program-name", users.getFrontendProgramSearchByProgramName)
+
+
 
 };

@@ -19,6 +19,26 @@ exports.getAllProgramLevels = (req, res) => {
     });
 };
 
+// Get Program Level by ID
+exports.getProgramLevelById = (req, res) => {
+    ProgramLevelModel.MdlGetProgramLevelById(req.params.id, (err, data) => {
+        if (err) {
+            res.status(500).json({
+                status: false,
+                message: err.message || "Some error occurred while retrieving program level."
+            });
+            return;
+        }
+        res.status(200).json({  
+            status: true,
+            message: "Program level retrieved successfully",
+            info: data
+        });
+    });
+};
+
+
+
 // Create Program Level
 exports.createProgramLevel = (req, res) => {
     ProgramLevelModel.MdlCreateProgramLevel(req.body, (err, data) => {
@@ -91,6 +111,25 @@ exports.getAllFieldOfStudy = (req, res) => {
         });
     });
 };
+
+// Get Field of Study by ID
+exports.getFieldOfStudyById = (req, res) => {
+    ProgramLevelModel.MdlGetFieldOfStudyById(req.params.id, (err, data) => {
+        if (err) {
+            res.status(500).json({
+                status: false,
+                message: err.message || "Some error occurred while retrieving field of study."
+            });
+            return;
+        }
+        res.status(200).json({
+            status: true,
+            message: "Field of study retrieved successfully",
+            info: data
+        });
+    });
+};
+
 
 // Create Field of Study
 exports.createFieldOfStudy = (req, res) => {
