@@ -265,12 +265,20 @@ User.MdlGetFrontendProgramSearchByProgramName = async (filters, result) => {
                 query.program_name = { $regex: filters.program_name, $options: 'i' };
             }
 
-            // Optional filters
+            // Handle comma-separated course IDs
             if (filters.course) {
-                const courseIds = filters.course.split(',').map(id => id.trim());
-                query.course = { $in: courseIds };
+                try {
+                    const courseIds = filters.course.split(',').map(id => id.trim());
+                    if (courseIds.length > 0) {
+                        query.course = { $in: courseIds };
+                    }
+                    console.log("Course Query:", query.course); // Debug log
+                } catch (error) {
+                    console.error("Error processing course IDs:", error);
+                }
             }
 
+            // Other optional filters
             if (filters.field_of_study) {
                 query.field_of_study = filters.field_of_study;
             }
@@ -282,14 +290,20 @@ User.MdlGetFrontendProgramSearchByProgramName = async (filters, result) => {
                 query.program_level = filters.program_level;
             }
             if (filters.program_sublevel) {
-                query.program_sublevel = filters.program_sublevel;
+
+                try {
+                    const programSublevelIds = filters.program_sublevel.split(',').map(id => id.trim());
+                    if (programSublevelIds.length > 0) {
+                        query.program_sublevel = { $in: programSublevelIds };
+                    }
+                    console.log("Program Sublevel Query:", query.program_sublevel); // Debug log
+                } catch (error) {
+                    console.error("Error processing program sublevel IDs:", error);
+                }
             }
         }
 
-        // Pagination parameters
-        const page = parseInt(filters.page) || 1;
-        const limit = parseInt(filters.limit) || 10;
-        const skip = (page - 1) * limit;
+        console.log("Final Query:", query); // Debug log
 
         // Get total count for pagination
         const totalCount = await Programs.countDocuments(query);
@@ -302,13 +316,13 @@ User.MdlGetFrontendProgramSearchByProgramName = async (filters, result) => {
                 path: 'field_of_study',
                 populate: {
                     path: 'field_of_study',
-                    match: { '_id': filters.field_of_study }
+                    match: { '_id': filters.course }
                 }
             })
             .populate('institution_type')
             .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit);
+            .skip((parseInt(filters.page) || 1 - 1) * (parseInt(filters.limit) || 10))
+            .limit(parseInt(filters.limit) || 10);
 
         // Filter out empty field_of_study arrays if course filter is applied
         const filteredProgramSearch = programSearch.map(program => {
@@ -321,22 +335,22 @@ User.MdlGetFrontendProgramSearchByProgramName = async (filters, result) => {
         });
 
         // Prepare pagination info
-        const totalPages = Math.ceil(totalCount / limit);
-        const hasNextPage = page < totalPages;
-        const hasPrevPage = page > 1;
+        const totalPages = Math.ceil(totalCount / (parseInt(filters.limit) || 10));
+        const hasNextPage = filters.page < totalPages;
+        const hasPrevPage = filters.page > 1;
 
         if (typeof result === 'function') {
             result(null, {
-                data: filteredProgramSearch,
+                data: programSearch,
                 pagination: {
                     total: totalCount,
-                    page: page,
-                    limit: limit,
+                    page: filters.page,
+                    limit: parseInt(filters.limit) || 10,
                     totalPages: totalPages,
                     hasNextPage: hasNextPage,
                     hasPrevPage: hasPrevPage,
-                    nextPage: hasNextPage ? page + 1 : null,
-                    prevPage: hasPrevPage ? page - 1 : null
+                    nextPage: hasNextPage ? filters.page + 1 : null,
+                    prevPage: hasPrevPage ? filters.page - 1 : null
                 }
             });
         }
