@@ -267,13 +267,16 @@ User.MdlGetFrontendProgramSearchByProgramName = async (filters, result) => {
 
             // Optional filters
             if (filters.course) {
-                query.course = filters.course;
+                const courseIds = filters.course.split(',').map(id => id.trim());
+                query.course = { $in: courseIds };
             }
+
             if (filters.field_of_study) {
                 query.field_of_study = filters.field_of_study;
             }
             if (filters.institution_type) {
-                query.institution_type = filters.institution_type;
+                const institutionTypeIds = filters.institution_type.split(',').map(id => id.trim());
+                query.institution_type = { $in: institutionTypeIds };
             }
             if (filters.program_level) {
                 query.program_level = filters.program_level;
