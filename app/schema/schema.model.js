@@ -44,7 +44,8 @@ const nocCodesSchema = new mongoose.Schema({
         tab: String,
         data: [{
             title: String,
-            description: String
+            description: String,
+            application_process: String,
         }]
     }]
 });
